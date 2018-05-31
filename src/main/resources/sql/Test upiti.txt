@@ -1,0 +1,59 @@
+-- islistati sve artikle
+select *
+from artikl;
+
+-- izlistati artikl sa id = 4
+select *
+from artikl
+where id = 4;
+
+-- izlistati artikle proizvodjaca "CENTROPROIZVOD"
+select *
+from artikl
+where proizvodjac like 'CENTROPROIZVOD';
+
+-- izlistati nazive artikala koji pocinju slovom P
+select naziv 
+from artikl
+where naziv like 'P%';
+
+-- izlistati nazive artikala koji sadrze rec Reg
+select naziv 
+from artikl
+where naziv like '%Reg%';
+
+-- izlistati sve porudzbine sa nazivima dobavljaca
+select p.*, d.naziv
+from porudzbina p, dobavljac d
+where p.dobavljac = d.id;
+
+-- izlistati datum isporuke porudzbine sa nazivima dobavljaca za porudzbine kreirane pre 28. februara
+select p.isporuceno, d.naziv
+from porudzbina p, dobavljac d
+where p.dobavljac = d.id and p.datum < to_date('28.02.2017.','dd.mm.yyyy.');
+
+-- izlistati sve stavke porudzbine gde je jedinica mere komad
+select * 
+from stavka_porudzbine
+where jedinica_mere like 'komad';
+
+-- izlistati sve stavke porudzbine za artikl Puding jagoda (sve iz stavka_porudzbine i naziv iz artikl)
+select sp.*, a.naziv
+from stavka_porudzbine sp
+inner join artikl a on (sp.artikl = a.id)
+where naziv like 'Puding jagoda';
+
+-- izlistati sve stavke porudzbine dobavljaca CENTROPROIZVOD (sve iz stavka_porudzbine i naziv iz dobavljac)
+select sp.*, d.naziv as "????? ?????????" 
+from stavka_porudzbine sp, porudzbina p, dobavljac d 
+where sp.porudzbina = p.id and p.dobavljac = d.id and d.naziv like 'CENTROPROIZVOD'; 
+
+-- izlistati sve porudzbine koje imaju artikl Puding jagoda i koje su placene (sve iz porudzbina i naziv iz artikl)
+select p.*, a.naziv
+from stavka_porudzbine sp, porudzbina p, artikl a 
+where p.id = sp.porudzbina and sp.artikl = a.id and a.naziv like 'Puding jagoda' and p.placeno = true;
+
+-- izlistati porudzbinu i njene stavke kreiranu 18.02.2017. i prikazati na sledeci nacin
+select p.id as "ID porudžbine", to_char(p.datum,'dd.mm.yyyy.') as "Datum kreiranja", to_char(p.isporuceno,'dd.mm.yyyy.') as "Datum isporuke", p.placeno as "Placeno", a.naziv as "Artikl", sp.kolicina as "Kolicina", sp.jedinica_mere as "JM", d.naziv as "Dobavljac"
+from  porudzbina p, dobavljac d, stavka_porudzbine sp, artikl a
+where p.id = sp.porudzbina and sp.artikl = a.id and p.dobavljac = d.id and p.datum = to_date('18.02.2017', 'dd.mm.yyyy');
