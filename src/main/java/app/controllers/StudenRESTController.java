@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+<<<<<<< HEAD
 @Api(tags = { "Student CRUD operacije" })
 public class StudenRESTController {
 
@@ -36,11 +37,29 @@ public class StudenRESTController {
 		return studentRepository.findAll();
 	}
 
+=======
+@Api(tags = {"Student CRUD operacije"})
+public class StudenRESTController {
+	
+	@Autowired
+	private StudentRepository studentRepository;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	@GetMapping("student")
+	@ApiOperation(value = "Vrаća kolekciju svih studenata iz baze podataka")
+	public Collection<Student> getStudenti(){
+		return studentRepository.findAll(); 
+	}
+	
+>>>>>>> 893a665a351922e68162071c88fee34f9d9a67f0
 	@GetMapping("student/{id}")
 	@ApiOperation(value = "Vrаća studenta iz baze podataka ciji je ID vrednost prosleđena kao path varijabla")
 	public Student getStudent(@PathVariable("id") Integer id) {
 		return studentRepository.getOne(id);
 	}
+<<<<<<< HEAD
 
 	@GetMapping("studentIndex/{index}")
 	@ApiOperation(value = "Vrаća studenta iz baze podataka koji ima odgovarajuci broj indexa")
@@ -64,10 +83,35 @@ public class StudenRESTController {
 				jdbcTemplate.execute(
 						"INSERT INTO \"student\"(\"id\", \"ime\", \"prezime\", \"broj_indexa\", \"grupa\", \"projekat\")\r\n"
 								+ "VALUES(-100, 'Test Ime, 'Test Prezime', 'Test Index', '1', '1')");
+=======
+	
+	@GetMapping("studentIndex/{index}")
+	@ApiOperation(value = "Vrаća studenta iz baze podataka koji ima odgovarajuci broj indexa")
+	public Collection<Student> getStudentByBrIndexa(@PathVariable("index") String index){
+		return studentRepository.findByBrIndexaContainingIgnoreCase(index);
+	}
+	
+	@GetMapping("studentPrezime/{prezime}")
+	@ApiOperation(value = "Vrаća studenta iz baze podataka koji ima odgovarajuce prezime")
+	public Collection<Student> getStudentByPrezime(@PathVariable("prezime") String prezime){
+		return studentRepository.findByPrezimeContainingIgnoreCase(prezime);
+	}
+	
+	@DeleteMapping("student/{id}")
+	@CrossOrigin
+	@ApiOperation(value = "Briše studenta iz baze podataka ciji je ID vrednost prosleđena kao path varijabla")
+	public ResponseEntity<Student> deleteStudent(@PathVariable("id") Integer id){
+		if(studentRepository.existsById(id)) {
+			studentRepository.deleteById(id);
+			if(id == -100)
+				jdbcTemplate.execute("INSERT INTO \"student\"(\"id\", \"ime\", \"prezime\", \"broj_indexa\", \"grupa\", \"projekat\")\r\n" + 
+									 "VALUES(-100, 'Test Ime, 'Test Prezime', 'Test Index', '1', '1')");
+>>>>>>> 893a665a351922e68162071c88fee34f9d9a67f0
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+<<<<<<< HEAD
 
 	// insert - Ovde koristimo POST metodu
 	@PostMapping("student")
@@ -76,10 +120,21 @@ public class StudenRESTController {
 	public ResponseEntity<Student> insertArtikl(@RequestBody Student student) {
 		if (studentRepository.existsById(student.getId())) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
+=======
+	
+	//insert - Ovde koristimo POST metodu
+	@PostMapping("student")
+	@CrossOrigin
+	@ApiOperation(value = "Insertuje studenta u bazu podataka")
+	public ResponseEntity<Student> insertArtikl(@RequestBody Student student){
+		if(studentRepository.existsById(student.getId())) {
+			return new ResponseEntity<> (HttpStatus.CONFLICT);
+>>>>>>> 893a665a351922e68162071c88fee34f9d9a67f0
 		}
 		studentRepository.save(student);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+<<<<<<< HEAD
 
 	// update - Ovde koristimo PUT metodu
 	@PutMapping("student")
@@ -93,4 +148,19 @@ public class StudenRESTController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+=======
+	
+	//update - Ovde koristimo PUT metodu
+	@PutMapping("student")
+	@CrossOrigin
+	@ApiOperation(value = "Modifikuje studenta iz baze podataka")
+	public ResponseEntity<Student> updateArtikl(@RequestBody Student student){
+		if(studentRepository.existsById(student.getId())) {
+			studentRepository.save(student);
+			return new ResponseEntity<> (HttpStatus.OK);
+		}
+		return new ResponseEntity<> (HttpStatus.NO_CONTENT);
+	}
+	
+>>>>>>> 893a665a351922e68162071c88fee34f9d9a67f0
 }
