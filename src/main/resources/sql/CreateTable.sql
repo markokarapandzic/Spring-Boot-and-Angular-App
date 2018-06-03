@@ -1,74 +1,69 @@
-DROP TABLE IF EXISTS artikl CASCADE;
-DROP TABLE IF EXISTS dobavljac CASCADE;
-DROP TABLE IF EXISTS porudzbina CASCADE;
-DROP TABLE IF EXISTS stavka_porudzbine CASCADE;
+DROP TABLE IF EXISTS smer CASCADE;
+DROP TABLE IF EXISTS grupa CASCADE;
+DROP TABLE IF EXISTS projekat CASCADE;
+DROP TABLE IF EXISTS student CASCADE;
 
-DROP SEQUENCE IF EXISTS artikl_seq;
-DROP SEQUENCE IF EXISTS dobavljac_seq;
-DROP SEQUENCE IF EXISTS porudzbina_seq;
-DROP SEQUENCE IF EXISTS stavka_porudzbine_seq;
+DROP SEQUENCE IF EXISTS smer_seq;
+DROP SEQUENCE IF EXISTS grupa_seq;
+DROP SEQUENCE IF EXISTS projekat_seq;
+DROP SEQUENCE IF EXISTS student_seq;
 
-CREATE TABLE artikl(
+CREATE TABLE smer(
 	id integer NOT NULL,
-    naziv varchar(50) NOT NULL,
-    proizvodjac varchar(50)
+    naziv varchar(100) NOT NULL,
+    oznaka varchar(50) not null
 );
 
-CREATE TABLE dobavljac(
+CREATE TABLE grupa(
 	id integer NOT NULL,
-    naziv VARCHAR(50) NOT NULL,
-    adresa VARCHAR(200) NOT NULL,
-    kontakt VARCHAR(100) NOT NULL
+    oznaka VARCHAR(10) NOT NULL,
+    smer integer NOT NULL
 );
 
-CREATE TABLE porudzbina(
+CREATE TABLE projekat(
 	id integer NOT NULL,
-    datum date NOT NULL,
-    isporuceno date NOT NULL,
-    iznos numeric NOT NULL,
-    placeno boolean,
-    dobavljac integer NOT NULL
+    naziv varchar(100) NOT NULL,
+    oznaka varchar(10) not null,
+    opis varchar(500) NOT NULL
 );
 
-CREATE TABLE stavka_porudzbine(
+CREATE TABLE student(
 	id integer NOT NULL,
-    redni_broj integer NOT NULL,
-    kolicina numeric NOT NULL,
-    jedinica_mere VARCHAR(50) NOT NULL,
-    cena numeric NOT NULL,
-    porudzbina integer NOT NULL,
-    artikl integer NOT NULL
+    ime varchar(50) NOT NULL,
+    prezime varchar(50) NOT NULL,
+    broj_indexa VARCHAR(20) NOT NULL,
+    grupa integer NOT NULL,
+    projekat integer NOT NULL
 );
 
-ALTER TABLE artikl ADD CONSTRAINT PK_Artikl
+ALTER TABLE smer ADD CONSTRAINT PK_Smer
 	PRIMARY KEY(id);
-ALTER TABLE dobavljac ADD CONSTRAINT PK_Dobavljac
+ALTER TABLE grupa ADD CONSTRAINT PK_Grupa
 	PRIMARY KEY(id);
-ALTER TABLE porudzbina ADD CONSTRAINT PK_Porudzbina
+ALTER TABLE projekat ADD CONSTRAINT PK_Projekat
 	PRIMARY KEY(id);
-ALTER TABLE stavka_porudzbine ADD CONSTRAINT PK_Stavka_Porudzbine
+ALTER TABLE student ADD CONSTRAINT PK_Student
 	PRIMARY KEY(id);
 
-ALTER TABLE porudzbina ADD CONSTRAINT FK_Porudzbina_Dobavljac
-	FOREIGN KEY (dobavljac) REFERENCES dobavljac (id);
-ALTER TABLE stavka_porudzbine ADD CONSTRAINT FK_Stavka_Porudzbine_Porudzbina
-	FOREIGN KEY (porudzbina) REFERENCES porudzbina (id);
-ALTER TABLE stavka_porudzbine ADD CONSTRAINT FK_Stavka_Porudzbine_Artikl
-	FOREIGN KEY (artikl) REFERENCES artikl (id);
+ALTER TABLE grupa ADD CONSTRAINT FK_Grupa_Smer
+	FOREIGN KEY (smer) REFERENCES smer (id);
+ALTER TABLE student ADD CONSTRAINT FK_Student_Grupa
+	FOREIGN KEY (grupa) REFERENCES grupa (id);
+ALTER TABLE student ADD CONSTRAINT FK_Student_Projekat
+	FOREIGN KEY (projekat) REFERENCES projekat (id);
 
-CREATE INDEX IDXFK_Porudzbina_Dobavljac
-	ON porudzbina (dobavljac);
-CREATE INDEX IDXFK_Stavka_Porudzbine_Porudzbina
-	ON stavka_porudzbine (porudzbina);
-CREATE INDEX IDXFK_Stavka_Porudzbine_Artikl
-	ON stavka_porudzbine (artikl);
+CREATE INDEX IDXFK_Grupa_Smer
+	ON grupa (smer);
+CREATE INDEX IDXFK_Student_Grupa
+	ON Student (grupa);
+CREATE INDEX IDXFK_Student_Projekat
+	ON student (projekat);
 	
-CREATE SEQUENCE artikl_seq
+CREATE SEQUENCE smer_seq
 INCREMENT 1;
-CREATE SEQUENCE dobavljac_seq
+CREATE SEQUENCE grupa_seq
 INCREMENT 1;
-CREATE SEQUENCE porudzbina_seq
+CREATE SEQUENCE projekat_seq
 INCREMENT 1;
-CREATE SEQUENCE stavka_porudzbine_seq
+CREATE SEQUENCE student_seq
 INCREMENT 1;
-
